@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bakery Admin Dashboard</title>
+
+    <link rel="stylesheet" href="/css/admin.css">
+</head>
+
+<body>
+
+<div class="dashboard-container">
+
+    <!-- ================= HEADER ================= -->
+    <header>
+        <div class="header-top">
+            <h1>Bakery Ordering & Event Booking</h1>
+
+            <div class="header-user-info">
+                <span id="profileRoleDisplay">Admin</span> |
+                <span id="profileEmailDisplay">admin@gmail.com</span>
+
+                <button id="logout-btn" onclick="handleLogout()">Logout</button>
+            </div>
+        </div>
+
+        <!-- NAVIGATION -->
+        <div class="header-nav-links">
+            <button class="nav-btn active" data-content="products-section">My Products</button>
+            <button class="nav-btn" data-content="services-section">Available Services</button>
+            <button class="nav-btn" data-content="orders-section">Customer Orders</button>
+            <button class="nav-btn" data-content="bookings-section">Customer Bookings</button>
+            <button class="nav-btn" data-content="dashboard-section">System Stats</button>
+        </div>
+    </header>
+
+    <!-- ================= MAIN CONTENT ================= -->
+    <main>
+
+        <!-- ================= DASHBOARD ================= -->
+        <div id="dashboard-section" class="content-section hidden">
+            <h2>System Overview</h2>
+
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <h3>Total Users</h3>
+                    <p id="stat-users">0</p>
+                </div>
+
+                <div class="stat-card">
+                    <h3>Total Orders</h3>
+                    <p id="stat-orders">0</p>
+                </div>
+
+                <div class="stat-card">
+                    <h3>Total Bookings</h3>
+                    <p id="stat-bookings">0</p>
+                </div>
+
+                <div class="stat-card">
+                    <h3>Total Revenue</h3>
+                    <p id="stat-revenue">₦0</p>
+                </div>
+            </div>
+
+            <div class="recent-section">
+                <h3>Recent Orders</h3>
+                <div id="recent-orders"></div>
+
+                <h3>Recent Bookings</h3>
+                <div id="recent-bookings"></div>
+            </div>
+        </div>
+
+        <!-- ================= PRODUCTS (DEFAULT TAB) ================= -->
+        <div id="products-section" class="content-section">
+            <h2>Manage Products</h2>
+
+            <button class="green-btn" onclick="openProductModal()">Add Product</button>
+
+            <div id="products-list-area">
+                <p>Loading products...</p>
+            </div>
+        </div>
+
+        <!-- ================= SERVICES ================= -->
+        <div id="services-section" class="content-section hidden">
+            <h2>Manage Services</h2>
+
+            <button class="green-btn" onclick="openServiceModal()">Add Service</button>
+
+            <div id="services-list-area">
+                <p>Loading services...</p>
+            </div>
+        </div>
+
+        <!-- ================= ORDERS ================= -->
+        <div id="orders-section" class="content-section hidden">
+            <h2>Customer Orders</h2>
+
+            <!-- FILTER BAR -->
+            <div class="filter-bar">
+                <label for="orderFilter">Filter Orders:</label>
+                <select id="orderFilter" onchange="filterOrders()">
+                    <option value="all">All</option>
+                    <option value="pending">Pending</option>
+                    <option value="confirmed">Confirmed</option>
+                    <option value="completed">Completed</option>
+                    <option value="cancelled">Cancelled</option>
+                </select>
+            </div>
+
+            <div id="orders-list-area">
+                <p>Loading orders...</p>
+            </div>
+        </div>
+
+        <!-- ================= BOOKINGS ================= -->
+        <div id="bookings-section" class="content-section hidden">
+            <h2>Event Bookings</h2>
+
+            <div id="bookings-list-area">
+                <p>Loading bookings...</p>
+            </div>
+        </div>
+
+    </main>
+</div>
+
+<!-- ================= PRODUCT MODAL ================= -->
+<div id="productModal" class="modal hidden">
+    <div class="modal-content">
+
+        <span class="close-btn" onclick="closeModal('productModal')">&times;</span>
+
+        <h2>Add Product</h2>
+
+        <form id="productForm" enctype="multipart/form-data">
+
+            <input type="hidden" id="productId">
+
+            <div class="form-group">
+                <label>Product Name</label>
+                <input type="text" id="productName" required>
+            </div>
+
+            <div class="form-group">
+                <label>Description</label>
+                <textarea id="productDescription"></textarea>
+            </div>
+
+            <div class="form-group">
+                <label>Price</label>
+                <input type="number" id="productPrice" required>
+            </div>
+
+            <div class="form-group">
+                <label>Category</label>
+                <input type="text" id="productCategory">
+            </div>
+
+            <div class="form-group">
+                <label>Image</label>
+                <input type="file" id="productImage">
+            </div>
+
+            <button type="submit" class="submit-btn green-btn">
+                Save Product
+            </button>
+
+        </form>
+
+    </div>
+</div>
+
+<!-- ================= SERVICE MODAL ================= -->
+<div id="serviceModal" class="modal hidden">
+    <div class="modal-content">
+
+        <span class="close-btn" onclick="closeModal('serviceModal')">&times;</span>
+
+        <h2>Add Service</h2>
+
+        <form id="serviceForm">
+
+            <input type="hidden" id="serviceId">
+
+            <div class="form-group">
+                <label>Service Name</label>
+                <input type="text" id="serviceName" required>
+            </div>
+
+            <div class="form-group">
+                <label>Description</label>
+                <textarea id="serviceDescription"></textarea>
+            </div>
+
+            <div class="form-group">
+                <label>Price</label>
+                <input type="number" id="servicePrice">
+            </div>
+
+            <button type="submit" class="submit-btn green-btn">
+                Save Service
+            </button>
+
+        </form>
+
+    </div>
+</div>
+
+<script src="/js/admin.js"></script>
+
+</body>
+</html>

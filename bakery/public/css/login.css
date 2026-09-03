@@ -1,0 +1,64 @@
+:root{--bg-image:url('/images/pexels-amine-kubranur-cakiroglu-689611212-38975800.jpg'); --accent: #2c3e50; --accent-dark: #22313a}
+body {
+  font-family: Arial, sans-serif;
+  background-image: linear-gradient(rgba(0,0,0,0.45), rgba(0,0,0,0.45)), var(--bg-image);
+  background-size: cover;
+  background-position: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  margin: 0;
+  color: #222;
+}
+
+.container {
+  /* background: rgba(255,255,255,0.92); */
+  padding: 30px;
+  width: 320px;
+  border-radius: 10px;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.2);
+  text-align: center;
+}
+
+h2 {
+  margin-bottom: 40px;
+  color: purple;
+}
+
+input {
+  width: 100%;
+  padding: 10px;
+  margin: 10px 0;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+button {
+  width: 100%;
+  padding: 10px;
+  background: var(--accent);
+  color: whitesmoke;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+button:hover {
+  background: var(--accent-dark);
+}
+
+.message {
+  margin-top: 10px;
+  font-size: 14px;
+}
+
+.link {
+  margin-top: 10px;
+  font-size: 13px;
+  color: purple;
+}
+a{
+  text-decoration: none;
+  color: purple;
+}
