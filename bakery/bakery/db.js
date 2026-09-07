@@ -62,15 +62,14 @@ async function query(sql, params = []) {
 }
 
 // Test connection
-const testConnection = async () => {
+async function init() {
   try {
     await pool.query('SELECT 1');
     console.log('✅ Postgres Connected Successfully');
   } catch (error) {
     console.error('❌ Postgres Connection Failed:', error);
+    throw error;
   }
-};
+}
 
-testConnection();
-
-module.exports = { query, pool };
+module.exports = { query, pool, init };

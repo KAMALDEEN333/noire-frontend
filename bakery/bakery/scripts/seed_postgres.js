@@ -10,7 +10,7 @@ async function initializeDatabase() {
         id SERIAL PRIMARY KEY,
         name VARCHAR(100) NOT NULL,
         email VARCHAR(150) UNIQUE NOT NULL,
-        phone VARCHAR(20) NOT NULL,
+        phone VARCHAR(20),
         password VARCHAR(255) NOT NULL,
         role VARCHAR(50) DEFAULT 'customer',
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
@@ -54,6 +54,38 @@ async function initializeDatabase() {
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
       )
     `);
+
+    // SEED PRODUCTS (if empty)
+    const [existingProduct] = await db.query('SELECT id FROM products LIMIT 1');
+    if (existingProduct.length === 0) {
+      await db.query(
+        'INSERT INTO products (name, description, price, category, image_url) VALUES (?, ?, ?, ?, ?)',
+        ['Chocolate Cake', 'Rich chocolate cake', 1500.00, 'cakes', '/images/chocolate_cake.jpg']
+      );
+      await db.query(
+        'INSERT INTO products (name, description, price, category, image_url) VALUES (?, ?, ?, ?, ?)',
+        ['Bread Loaf', 'Freshly baked bread loaf', 400.00, 'bread', '/images/bread_loaf.jpg']
+      );
+      console.log('✅ Seeded default products');
+    } else {
+      console.log('✅ Products already seeded');
+    }
+
+    // SEED SERVICES (if empty)
+    const [existingService] = await db.query('SELECT id FROM services LIMIT 1');
+    if (existingService.length === 0) {
+      await db.query(
+        'INSERT INTO services (name, description, price) VALUES (?, ?, ?)',
+        ['Cake Decoration', 'Custom cake decoration service', 5000.00]
+      );
+      await db.query(
+        'INSERT INTO services (name, description, price) VALUES (?, ?, ?)',
+        ['Event Catering', 'Full event catering service', 25000.00]
+      );
+      console.log('✅ Seeded default services');
+    } else {
+      console.log('✅ Services already seeded');
+    }
 
     // ORDERS
     await db.query(`

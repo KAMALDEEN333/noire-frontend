@@ -3,6 +3,7 @@ const path = require('path');
 require('dotenv').config();
 
 const initializeDatabase = require('./scripts/seed_postgres');
+const db = require('./db');
 
 const app = express();
 
@@ -71,6 +72,7 @@ const PORT = process.env.PORT || 3000;
 
 async function startServer() {
   try {
+    await db.init();
     await initializeDatabase();
 
     app.listen(PORT, '0.0.0.0', () => {
