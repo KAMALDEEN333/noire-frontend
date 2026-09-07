@@ -147,6 +147,57 @@ async function initializeDatabase() {
       )
     `);
 
+    // =====================================================
+    // ADD COLUMNS REQUIRED BY EXISTING ROUTES
+    // =====================================================
+
+    await db.query(`
+      ALTER TABLE services
+      ADD COLUMN IF NOT EXISTS is_active BOOLEAN DEFAULT TRUE
+    `);
+
+    await db.query(`
+      ALTER TABLE products
+      ADD COLUMN IF NOT EXISTS is_available BOOLEAN DEFAULT TRUE
+    `);
+
+    await db.query(`
+      ALTER TABLE bookings
+      ADD COLUMN IF NOT EXISTS event_time TIME
+    `);
+
+    await db.query(`
+      ALTER TABLE bookings
+      ADD COLUMN IF NOT EXISTS special_requests TEXT
+    `);
+
+    await db.query(`
+      ALTER TABLE orders
+      ADD COLUMN IF NOT EXISTS notes TEXT
+    `);
+
+    await db.query(`
+      ALTER TABLE orders
+      ADD COLUMN IF NOT EXISTS delivery_date DATE
+    `);
+
+    await db.query(`
+      ALTER TABLE orders
+      ADD COLUMN IF NOT EXISTS delivery_time TIME
+    `);
+
+    await db.query(`
+      ALTER TABLE payments
+      ADD COLUMN IF NOT EXISTS booking_id INTEGER REFERENCES bookings(id) ON DELETE SET NULL
+    `);
+
+    await db.query(`
+      ALTER TABLE payments
+      ADD COLUMN IF NOT EXISTS paid_at TIMESTAMP
+    `);
+
+    console.log('✅ Required columns checked');
+
     // CREATE ADMIN USER
     const [adminUsers] = await db.query(
       'SELECT id FROM users WHERE email = ?',
