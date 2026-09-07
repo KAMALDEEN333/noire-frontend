@@ -2,6 +2,8 @@ const express = require('express');
 const path = require('path');
 require('dotenv').config();
 
+const initializeDatabase = require('./scripts/seed_postgres');
+
 const app = express();
 
 // ============================
@@ -67,6 +69,17 @@ message: err.message || 'Something went wrong'
 // ============================
 const PORT = process.env.PORT || 3000;
 
-app.listen(PORT, '0.0.0.0', () => {
-  console.log(`Server running on port ${PORT}`);
-});
+async function startServer() {
+  try {
+    await initializeDatabase();
+
+    app.listen(PORT, '0.0.0.0', () => {
+      console.log(`Server running on port ${PORT}`);
+    });
+  } catch (error) {
+    console.error('❌ Server startup failed:', error);
+    process.exit(1);
+  }
+}
+
+startServer();

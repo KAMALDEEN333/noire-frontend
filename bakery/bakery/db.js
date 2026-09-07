@@ -1,7 +1,5 @@
 const { Pool } = require('pg');
-const path = require('path');
-// Load .env relative to this file to ensure values are available
-require('dotenv').config({ path: path.join(__dirname, '.env') });
+require('dotenv').config();
 
 // Debug: show password type/length without revealing the value
 const rawPassword = process.env.POSTGRES_PASSWORD;
