@@ -8,14 +8,19 @@ console.log('DB password type:', typeof rawPassword, 'length:', rawPassword ? St
 // Ensure password is always a string (pg expects a string for SCRAM auth)
 const coercedPassword = rawPassword == null ? '' : String(rawPassword);
 
-// Create Postgres pool using env vars
-const pool = new Pool({
+// Create Postgres pool using env vars. Only set `password` when non-empty.
+const poolConfig = {
   host: process.env.POSTGRES_HOST || 'localhost',
   port: process.env.POSTGRES_PORT ? parseInt(process.env.POSTGRES_PORT) : 5432,
   user: process.env.POSTGRES_USER || 'postgres',
-  password: coercedPassword,
   database: process.env.POSTGRES_DB || 'bakery_system'
-});
+};
+
+if (coercedPassword && coercedPassword.length > 0) {
+  poolConfig.password = coercedPassword;
+}
+
+const pool = new Pool(poolConfig);
 
 pool.on('error', (err) => {
   console.error('Postgres pool error', err);
@@ -72,4 +77,51 @@ async function init() {
   }
 }
 
-module.exports = { query, pool, init };
+// Provide a MySQL-style connection wrapper for routes that expect
+// `getConnection()` with transactional methods and `query()` that
+// returns mysql-ish shaped results (e.g. insertId, affectedRows).
+async function getConnection() {
+  const client = await pool.connect();
+
+  return {
+    query: async (sql, params = []) => {
+      const trimmed = sql.trim();
+      const isSelect = /^SELECT/i.test(trimmed);
+      const isInsert = /^INSERT/i.test(trimmed);
+      const isUpdate = /^UPDATE/i.test(trimmed);
+      const isDelete = /^DELETE/i.test(trimmed);
+
+      let finalSql = sql;
+
+      if (isInsert && !/RETURNING\s+/i.test(sql)) {
+        finalSql = sql + ' RETURNING id';
+      }
+
+      finalSql = replacePlaceholders(finalSql);
+
+      const res = await client.query(finalSql, params);
+
+      if (isSelect) {
+        return [res.rows];
+      }
+
+      if (isInsert) {
+        const insertId = res.rows && res.rows[0] ? res.rows[0].id : null;
+        return [{ insertId, rowCount: res.rowCount }];
+      }
+
+      if (isUpdate || isDelete) {
+        return [{ affectedRows: res.rowCount }];
+      }
+
+      return [res.rows];
+    },
+
+    beginTransaction: async () => await client.query('BEGIN'),
+    commit: async () => await client.query('COMMIT'),
+    rollback: async () => await client.query('ROLLBACK'),
+    release: () => client.release()
+  };
+}
+
+module.exports = { query, pool, init, getConnection };

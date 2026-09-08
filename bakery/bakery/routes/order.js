@@ -4,78 +4,153 @@ const db = require('../db');
 const { protect, admin } = require('../middleware/auth');
 
 // =====================================================
-// CREATE ORDER (WITH TRANSACTION + PAYMENT RECORD)
+// CREATE ORDER (POSTGRESQL TRANSACTION + PAYMENT RECORD)
 // =====================================================
 router.post('/', protect, async (req, res) => {
-    const connection = await db.getConnection();
+    const client = await db.pool.connect();
 
     try {
         const userId = req.user.id;
         const { items, notes, delivery_date, delivery_time } = req.body;
 
-        if (!items || items.length === 0) {
-            return res.status(400).json({ message: 'No items in order' });
+        if (!items || !Array.isArray(items) || items.length === 0) {
+            return res.status(400).json({
+                message: 'No items in order'
+            });
         }
 
-        // AUTO-FETCH USER ADDRESS (Prevents the "Same Address" bug)
-        const [addressRows] = await connection.query(
-            'SELECT id FROM addresses WHERE user_id = ? LIMIT 1',
+        await client.query('BEGIN');
+
+        // Get customer's address
+        const addressResult = await client.query(
+            `SELECT id
+             FROM addresses
+             WHERE user_id = $1
+             LIMIT 1`,
             [userId]
         );
 
-        if (addressRows.length === 0) {
-            return res.status(400).json({ message: 'Please update your profile with an address before ordering.' });
+        if (addressResult.rows.length === 0) {
+            await client.query('ROLLBACK');
+
+            return res.status(400).json({
+                message: 'Please update your profile with an address before ordering.'
+            });
         }
 
-        const address_id = addressRows[0].id;
+        const addressId = addressResult.rows[0].id;
 
-        await connection.beginTransaction();
-
-        const [orderResult] = await connection.query(
-            `INSERT INTO orders (user_id, address_id, notes, delivery_date, delivery_time)
-             VALUES (?, ?, ?, ?, ?)`,
-            [userId, address_id, notes, delivery_date, delivery_time]
+        // Create order
+        const orderResult = await client.query(
+            `INSERT INTO orders
+             (user_id, address_id, notes, delivery_date, delivery_time)
+             VALUES ($1, $2, $3, $4, $5)
+             RETURNING id`,
+            [
+                userId,
+                addressId,
+                notes || null,
+                delivery_date || null,
+                delivery_time || null
+            ]
         );
 
-        const orderId = orderResult.insertId;
-        const productIds = items.map(i => i.product_id);
+        const orderId = orderResult.rows[0].id;
 
-        const [products] = await connection.query(
-            `SELECT id, price, is_available FROM products WHERE id IN (?)`,
+        // Get product IDs
+        const productIds = items.map(item => Number(item.product_id));
+
+        // Fetch products
+        const productResult = await client.query(
+            `SELECT id, price, is_available
+             FROM products
+             WHERE id = ANY($1::integer[])`,
             [productIds]
         );
 
+        const products = productResult.rows;
+
         let totalPrice = 0;
-        for (let item of items) {
-            const product = products.find(p => p.id === item.product_id);
-            if (!product || !product.is_available) throw new Error(`Product unavailable: ${item.product_id}`);
 
-            const quantity = item.quantity || 1;
-            totalPrice += product.price * quantity;
+        // Add order items
+        for (const item of items) {
+            const productId = Number(item.product_id);
+            const quantity = Number(item.quantity) || 1;
 
-            await connection.query(
-                `INSERT INTO order_items (order_id, product_id, quantity, price)
-                 VALUES (?, ?, ?, ?)`,
-                [orderId, item.product_id, quantity, product.price]
+            const product = products.find(
+                p => Number(p.id) === productId
+            );
+
+            if (!product) {
+                throw new Error(`Product not found: ${productId}`);
+            }
+
+            if (product.is_available === false) {
+                throw new Error(`Product unavailable: ${productId}`);
+            }
+
+            const price = Number(product.price);
+
+            totalPrice += price * quantity;
+
+            await client.query(
+                `INSERT INTO order_items
+                 (order_id, product_id, quantity, price)
+                 VALUES ($1, $2, $3, $4)`,
+                [
+                    orderId,
+                    productId,
+                    quantity,
+                    price
+                ]
             );
         }
 
-        await connection.query('UPDATE orders SET total_price = ? WHERE id = ?', [totalPrice, orderId]);
-
-        await connection.query(
-            `INSERT INTO payments (user_id, order_id, amount, payment_method, payment_status)
-             VALUES (?, ?, ?, 'transfer', 'pending')`,
-            [userId, orderId, totalPrice]
+        // Update order total
+        await client.query(
+            `UPDATE orders
+             SET total_price = $1
+             WHERE id = $2`,
+            [totalPrice, orderId]
         );
 
-        await connection.commit();
-        res.status(201).json({ message: 'Order placed', orderId, totalPrice });
+        // Create payment record
+        await client.query(
+            `INSERT INTO payments
+             (user_id, order_id, amount, payment_method, payment_status)
+             VALUES ($1, $2, $3, $4, $5)`,
+            [
+                userId,
+                orderId,
+                totalPrice,
+                'transfer',
+                'pending'
+            ]
+        );
+
+        await client.query('COMMIT');
+
+        res.status(201).json({
+            message: 'Order placed',
+            orderId,
+            totalPrice
+        });
 
     } catch (error) {
-        await connection.rollback();
-        res.status(500).json({ message: error.message });
+        try {
+            await client.query('ROLLBACK');
+        } catch (rollbackError) {
+            console.error('Rollback failed:', rollbackError);
+        }
+
+        console.error('Order creation error:', error);
+
+        res.status(500).json({
+            message: error.message
+        });
+
     } finally {
-        connection.release();
+        client.release();
     }
 });
 
