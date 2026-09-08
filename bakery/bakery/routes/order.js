@@ -21,6 +21,8 @@ router.post('/', protect, async (req, res) => {
 
         await client.query('BEGIN');
 
+        const userRole = req.user.role;
+
         // Get customer's address
         const addressResult = await client.query(
             `SELECT id
@@ -30,15 +32,21 @@ router.post('/', protect, async (req, res) => {
             [userId]
         );
 
-        if (addressResult.rows.length === 0) {
+        let addressId = null;
+
+        if (addressResult.rows.length > 0) {
+            addressId = addressResult.rows[0].id;
+        }
+
+        // Customers must have an address.
+        // Staff/admin can place orders without one.
+        if (!addressId && userRole === 'customer') {
             await client.query('ROLLBACK');
 
             return res.status(400).json({
                 message: 'Please update your profile with an address before ordering.'
             });
         }
-
-        const addressId = addressResult.rows[0].id;
 
         // Create order
         const orderResult = await client.query(

@@ -62,8 +62,9 @@ const [bookingResult] = await connection.query(
 const bookingId = bookingResult.insertId;
 
 // Get services
+// Use Postgres-compatible array parameter for IDs
 const [services] = await connection.query(
-  `SELECT id, price, is_active FROM services WHERE id IN (?)`,
+  `SELECT id, price, is_active FROM services WHERE id = ANY(?::integer[])`,
   [service_ids]
 );
 

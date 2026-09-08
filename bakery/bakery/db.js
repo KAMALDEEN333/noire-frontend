@@ -73,6 +73,11 @@ async function init() {
     console.log('✅ Postgres Connected Successfully');
   } catch (error) {
     console.error('❌ Postgres Connection Failed:', error);
+
+    // Helpful hint for the common SCRAM error when password is invalid
+    if (error && /client password must be a string/i.test(String(error.message))) {
+      console.error('🔧 Hint: check your POSTGRES_PASSWORD env var — it must be a non-empty string.');
+    }
     throw error;
   }
 }
