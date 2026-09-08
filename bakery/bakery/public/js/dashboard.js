@@ -23,7 +23,7 @@ let currentTransaction = {
 // ==========================================
 document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('userEmail').textContent = user.email || 'Customer';
-    
+
     setupNavigation();
     loadProfile();
     fetchProducts();
@@ -35,7 +35,7 @@ document.addEventListener('DOMContentLoaded', () => {
 function setupNavigation() {
     const tabs = document.querySelectorAll('.tab-btn');
     const sections = document.querySelectorAll('.content-section');
-    
+
     tabs.forEach(tab => {
         tab.addEventListener('click', () => {
             const target = tab.dataset.section;
@@ -51,6 +51,11 @@ function setupNavigation() {
 // ==========================================
 // 3. DATA FETCHING (PRODUCTS & SERVICES)
 // ==========================================
+
+// Fallback image used only when a product has no image_url from the API.
+// Point this at whatever your backend serves your /uploads folder as.
+const DEFAULT_PRODUCT_IMAGE = '/uploads/bread-loaf.jpg';
+
 async function fetchProducts() {
     const container = document.getElementById('products-list');
     try {
@@ -65,7 +70,7 @@ async function fetchProducts() {
 
         container.innerHTML = products.map(p => `
             <div class="card product-card">
-                <img src="${p.image_url || 'https://via.placeholder.com/150'}" alt="${p.name}">
+                <img src="${p.image_url || DEFAULT_PRODUCT_IMAGE}" alt="${p.name}">
                 <h3>${p.name}</h3>
                 <p>${p.description || ''}</p>
                 <p class="price">₦${p.price}</p>
@@ -82,10 +87,10 @@ async function fetchServices() {
     try {
         const res = await fetch(`${API_BASE}/services`);
         const services = await res.json();
-        
+
         // Keep the first default option
         dropdown.innerHTML = '<option value="">-- Choose a Service --</option>';
-        
+
         services.forEach(s => {
             const opt = document.createElement('option');
             opt.value = s.id;
@@ -118,7 +123,7 @@ async function submitOrder() {
     try {
         const res = await fetch(`${API_BASE}/products/${currentTransaction.productId}`);
         const product = await res.json();
-        
+
         currentTransaction.quantity = Number(qty);
         currentTransaction.totalAmount = product.price * qty;
 
@@ -156,7 +161,7 @@ function submitBooking() {
         event_date: date,
         location: loc,
         service_ids: [Number(selectedOption.value)], // Array for backend support
-        event_time: "12:00:00" 
+        event_time: "12:00:00"
     };
 
     closeBookingModal();
@@ -172,7 +177,7 @@ function openPaymentModal(amount) {
     document.getElementById('payment-processing').classList.add('hidden');
     document.getElementById('payment-footer').classList.remove('hidden');
     document.getElementById('paymentStatusMsg').textContent = "";
-    
+
     document.getElementById('paymentAmount').value = `₦${amount}`;
     document.getElementById('paymentModal').classList.remove('hidden');
 }
@@ -204,21 +209,21 @@ async function processPayment() {
         try {
             // Determine endpoint (ensure plural 'orders')
             const endpoint = currentTransaction.type === 'order' ? '/orders' : '/bookings';
-            
-            // Step A: Create the Order/Booking 
+
+            // Step A: Create the Order/Booking
             // Note: address_id is REMOVED so the backend picks the user's saved address
             const res = await fetch(`${API_BASE}${endpoint}`, {
                 method: 'POST',
-                headers: { 
-                    'Content-Type': 'application/json', 
-                    'Authorization': `Bearer ${token}` 
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
                 },
                 body: JSON.stringify(
-                    currentTransaction.type === 'order' 
+                    currentTransaction.type === 'order'
                     ? {
-                        items: [{ 
-                            product_id: currentTransaction.productId, 
-                            quantity: currentTransaction.quantity 
+                        items: [{
+                            product_id: currentTransaction.productId,
+                            quantity: currentTransaction.quantity
                         }]
                         // No address_id here; backend handles it!
                       }
@@ -231,12 +236,12 @@ async function processPayment() {
 
             // Step B: Update Payment Status to 'successful'
             // Extract the ID returned by the backend
-            const transactionId = data.orderId || data.bookingId; 
-            
+            const transactionId = data.orderId || data.bookingId;
+
             const payRes = await fetch(`${API_BASE}${endpoint}/${transactionId}/pay`, {
                 method: 'PUT',
-                headers: { 
-                    'Authorization': `Bearer ${token}` 
+                headers: {
+                    'Authorization': `Bearer ${token}`
                 }
             });
 
@@ -252,7 +257,7 @@ async function processPayment() {
                     <p>Redirecting to your dashboard...</p>
                 </div>
             `;
-            
+
             // Refresh data and close modal
             setTimeout(() => {
                 closePaymentModal();
@@ -267,7 +272,7 @@ async function processPayment() {
             footer.classList.remove('hidden');
             statusMsg.innerHTML = `<span style="color: red; font-weight: bold;">Error: ${err.message}</span>`;
         }
-    }, 5000); 
+    }, 5000);
 }
 
 
@@ -296,8 +301,8 @@ async function fetchMyOrders() {
             });
 
             // If there's more than one item type, show "Product (+X others)"
-            const displayName = o.item_count > 1 
-                ? `${o.product_name} (+${o.item_count - 1} more)` 
+            const displayName = o.item_count > 1
+                ? `${o.product_name} (+${o.item_count - 1} more)`
                 : (o.product_name || 'Bakery Item');
 
             return `
@@ -323,7 +328,7 @@ async function fetchMyOrders() {
 async function fetchMyBookings() {
     const container = document.getElementById('bookings-list');
     try {
-        // Updated to fetch with service details if your API supports it, 
+        // Updated to fetch with service details if your API supports it,
         // otherwise we show the Booking ID and Date clearly.
         const res = await fetch(`${API_BASE}/bookings/my`, {
             headers: { 'Authorization': `Bearer ${token}` }

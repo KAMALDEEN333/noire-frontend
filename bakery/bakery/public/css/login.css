@@ -1,64 +1,196 @@
-:root{--bg-image:url('/images/pexels-amine-kubranur-cakiroglu-689611212-38975800.jpg'); --accent: #2c3e50; --accent-dark: #22313a}
+:root {
+  --bg-image: url('https://images.pexels.com/photos/1383908/pexels-photo-1383908.jpeg?auto=compress&cs=tinysrgb&w=1400');
+
+  --cream: #FBF3E7;
+  --panel: #FFFFFF;
+  --crust: #3B2417;
+  --caramel: #C97D3F;
+  --caramel-dark: #A65F27;
+  --taupe: #8C7A6B;
+  --line: #E7DACB;
+}
+
+* {
+  box-sizing: border-box;
+}
+
 body {
-  font-family: Arial, sans-serif;
-  background-image: linear-gradient(rgba(0,0,0,0.45), rgba(0,0,0,0.45)), var(--bg-image);
+  font-family: 'Work Sans', Arial, sans-serif;
+  background: var(--cream);
+  margin: 0;
+  color: var(--crust);
+}
+
+.page {
+  display: flex;
+  min-height: 100vh;
+}
+
+/* ---------- Left: bakery visual ---------- */
+
+.visual-panel {
+  position: relative;
+  flex: 0 0 44%;
+  min-height: 100vh;
+  background-image:
+    linear-gradient(0deg, rgba(28, 15, 6, 0.55), rgba(28, 15, 6, 0.08) 45%),
+    var(--bg-image);
   background-size: cover;
   background-position: center;
+  border-radius: 0 18% 0 32% / 0 40% 0 55%;
+}
+
+.visual-panel__tag {
+  position: absolute;
+  left: 32px;
+  bottom: 40px;
   display: flex;
-  justify-content: center;
   align-items: center;
-  height: 100vh;
-  margin: 0;
-  color: #222;
+  gap: 10px;
+  font-family: 'Fraunces', Georgia, serif;
+  font-style: italic;
+  font-size: 19px;
+  color: #FBF3E7;
+  letter-spacing: 0.01em;
+}
+
+.visual-panel__crumb {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: var(--caramel);
+  color: #2A1608;
+  font-style: normal;
+  font-size: 15px;
+}
+
+/* ---------- Right: form ---------- */
+
+.form-panel {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 24px;
 }
 
 .container {
-  /* background: rgba(255,255,255,0.92); */
-  padding: 30px;
-  width: 320px;
-  border-radius: 10px;
-  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.2);
-  text-align: center;
+  width: 100%;
+  max-width: 360px;
+  text-align: left;
+}
+
+.eyebrow {
+  margin: 0 0 6px;
+  font-size: 13px;
+  color: var(--caramel-dark);
+  font-weight: 600;
 }
 
 h2 {
-  margin-bottom: 40px;
-  color: purple;
+  margin: 0 0 10px;
+  font-family: 'Fraunces', Georgia, serif;
+  font-weight: 600;
+  font-size: 34px;
+  color: var(--crust);
+}
+
+.subtitle {
+  margin: 0 0 30px;
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--taupe);
+}
+
+.field-label {
+  display: block;
+  font-size: 12.5px;
+  font-weight: 500;
+  color: var(--crust);
+  margin: 16px 0 6px;
 }
 
 input {
   width: 100%;
-  padding: 10px;
-  margin: 10px 0;
-  border: 1px solid #ccc;
-  border-radius: 5px;
+  padding: 12px 18px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--panel);
+  font-family: 'Work Sans', Arial, sans-serif;
+  font-size: 14px;
+  color: var(--crust);
+}
+
+input::placeholder {
+  color: #B8A996;
+}
+
+input:focus {
+  outline: none;
+  border-color: var(--caramel);
+  box-shadow: 0 0 0 3px rgba(201, 125, 63, 0.18);
 }
 
 button {
   width: 100%;
-  padding: 10px;
-  background: var(--accent);
-  color: whitesmoke;
+  margin-top: 26px;
+  padding: 13px;
+  background: var(--caramel);
+  color: #FFF8EF;
   border: none;
-  border-radius: 5px;
+  border-radius: 8px;
+  font-size: 15px;
+  font-weight: 600;
   cursor: pointer;
+  transition: background 0.15s ease;
 }
 
 button:hover {
-  background: var(--accent-dark);
+  background: var(--caramel-dark);
 }
 
 .message {
-  margin-top: 10px;
-  font-size: 14px;
+  margin-top: 14px;
+  min-height: 18px;
+  font-size: 13.5px;
+  text-align: center;
 }
 
 .link {
-  margin-top: 10px;
-  font-size: 13px;
-  color: purple;
+  margin-top: 22px;
+  font-size: 13.5px;
+  color: var(--taupe);
+  text-align: center;
 }
-a{
+
+a {
   text-decoration: none;
-  color: purple;
+  color: var(--caramel-dark);
+  font-weight: 600;
+}
+
+/* ---------- Responsive ---------- */
+
+@media (max-width: 900px) {
+  .page {
+    flex-direction: column;
+  }
+
+  .visual-panel {
+    flex: 0 0 220px;
+    min-height: 220px;
+    border-radius: 0 0 60% 0 / 0 0 40% 0;
+  }
+
+  .form-panel {
+    padding: 36px 20px 48px;
+  }
+
+  .container {
+    max-width: 400px;
+    margin: 0 auto;
+  }
 }

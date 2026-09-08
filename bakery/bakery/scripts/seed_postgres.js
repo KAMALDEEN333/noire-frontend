@@ -225,6 +225,33 @@ async function initializeDatabase() {
       console.log('✅ Admin user already exists');
     }
 
+    // CREATE STAFF USER
+    const [staffUsers] = await db.query(
+      'SELECT id FROM users WHERE email = ?',
+      ['staff@gmail.com']
+    );
+
+    if (staffUsers.length === 0) {
+      await db.query(
+        `INSERT INTO users
+        (name, email, phone, password, role)
+        VALUES (?, ?, ?, ?, ?)`,
+        [
+          'Staff',
+          'staff@gmail.com',
+          '08000000001',
+          '12345678',
+          'staff'
+        ]
+      );
+
+      console.log('✅ Staff user created');
+      console.log('Email: staff@gmail.com');
+      console.log('Password: 12345678');
+    } else {
+      console.log('✅ Staff user already exists');
+    }
+
     console.log('✅ Database initialization completed');
 
   } catch (error) {

@@ -4,27 +4,101 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Bakery System - Register</title>
-
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/register.css" />
 </head>
 
 <body>
 
-  <div class="container">
-    <h2>Create Account</h2>
+  <div class="wrap">
+    <div class="card">
 
-    <input type="text" id="name" placeholder="Full Name" />
-    <input type="email" id="email" placeholder="Email" />
-    <input type="text" id="phone" placeholder="Phone Number" />
-    <input type="password" id="password" placeholder="Password" />
+      <!-- Left panel: illustration -->
+      <div class="panel-art">
+        <svg class="art-glow" viewBox="0 0 400 520" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <defs>
+            <radialGradient id="glow1" cx="50%" cy="50%" r="50%">
+              <stop offset="0%" stop-color="#E8A33D" stop-opacity="0.55"/>
+              <stop offset="100%" stop-color="#E8A33D" stop-opacity="0"/>
+            </radialGradient>
+            <radialGradient id="glow2" cx="50%" cy="50%" r="50%">
+              <stop offset="0%" stop-color="#C9682B" stop-opacity="0.45"/>
+              <stop offset="100%" stop-color="#C9682B" stop-opacity="0"/>
+            </radialGradient>
+          </defs>
+          <ellipse cx="150" cy="430" rx="150" ry="140" fill="url(#glow1)"/>
+          <ellipse cx="290" cy="380" rx="130" ry="150" fill="url(#glow2)"/>
 
-    <button onclick="registerUser()">Register</button>
+          <!-- wheat stalks -->
+          <g stroke="#F3D9A8" stroke-width="2.5" fill="none" stroke-linecap="round" opacity="0.9">
+            <path d="M60 480 L75 300"/>
+            <ellipse cx="70" cy="320" rx="9" ry="16" fill="#F3D9A8" stroke="none" transform="rotate(-20 70 320)"/>
+            <ellipse cx="80" cy="340" rx="9" ry="16" fill="#F3D9A8" stroke="none" transform="rotate(20 80 340)"/>
+            <ellipse cx="68" cy="360" rx="9" ry="16" fill="#F3D9A8" stroke="none" transform="rotate(-20 68 360)"/>
+            <ellipse cx="82" cy="380" rx="9" ry="16" fill="#F3D9A8" stroke="none" transform="rotate(20 82 380)"/>
+          </g>
 
-    <p class="message" id="message"></p>
+          <!-- loaf of bread -->
+          <g transform="translate(120,340)">
+            <path d="M0 90 C0 40 30 0 90 0 C150 0 180 40 180 90 C180 110 160 118 90 118 C20 118 0 110 0 90 Z" fill="#B5651D"/>
+            <path d="M8 88 C8 44 34 10 90 10 C146 10 172 44 172 88" fill="none" stroke="#7A3F14" stroke-width="3" opacity="0.5"/>
+            <path d="M40 8 C46 -8 50 20 56 4" stroke="#7A3F14" stroke-width="4" fill="none" stroke-linecap="round"/>
+            <path d="M80 4 C86 -12 90 18 96 0" stroke="#7A3F14" stroke-width="4" fill="none" stroke-linecap="round"/>
+            <path d="M120 8 C126 -8 130 20 136 4" stroke="#7A3F14" stroke-width="4" fill="none" stroke-linecap="round"/>
+          </g>
 
-    <p class="link">
-      Already have an account? <a href="login.html">Login</a>
-    </p>
+          <!-- croissant -->
+          <g transform="translate(230,270) rotate(-8)">
+            <path d="M0 30 C10 -10 60 -14 78 12 C92 32 82 56 60 60 C68 44 58 30 44 30 C50 42 40 54 24 52 C30 40 22 28 8 32 C2 32 -2 30 0 30 Z" fill="#D98E2B"/>
+            <path d="M10 28 C18 4 50 0 66 16" stroke="#A85D1A" stroke-width="2.5" fill="none" stroke-linecap="round" opacity="0.6"/>
+          </g>
+
+          <!-- rolling pin -->
+          <g transform="translate(215,440) rotate(-14)" opacity="0.95">
+            <rect x="0" y="0" width="150" height="16" rx="8" fill="#E8C48A"/>
+            <rect x="-14" y="-3" width="16" height="22" rx="6" fill="#F3D9A8"/>
+            <rect x="148" y="-3" width="16" height="22" rx="6" fill="#F3D9A8"/>
+          </g>
+        </svg>
+
+      </div>
+
+      <!-- Right panel: form -->
+      <div class="panel-form">
+        <div class="brand-mark" aria-hidden="true">
+          <svg width="34" height="34" viewBox="0 0 34 34" fill="none">
+            <path d="M17 2 C20 9 27 10 27 17 C27 23.5 22.5 28 17 28 C11.5 28 7 23.5 7 17 C7 10 14 9 17 2 Z" fill="#C9682B"/>
+          </svg>
+        </div>
+
+        <h2>Create account</h2>
+        <p class="sub">Welcome to Bakery System — let's get your kitchen set up.</p>
+
+        <hr class="divider" />
+
+        <label for="name">Full name</label>
+        <input type="text" id="name" placeholder="Amara Okafor" />
+
+        <label for="email">Email</label>
+        <input type="email" id="email" placeholder="you@yourbakery.com" />
+
+        <label for="phone">Phone number</label>
+        <input type="text" id="phone" placeholder="080 000 0000" />
+
+        <label for="password">Create password</label>
+        <input type="password" id="password" placeholder="••••••••••" />
+
+        <button onclick="registerUser()">Create account</button>
+
+        <p class="message" id="message"></p>
+
+        <p class="link">
+          Already have an account? <a href="login.html">Log in</a>
+        </p>
+      </div>
+
+    </div>
   </div>
 
   <script src="js/register.js"></script>

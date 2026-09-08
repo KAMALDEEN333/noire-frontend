@@ -5,15 +5,41 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    font-family: Arial, sans-serif;
+    font-family: 'Poppins', 'Segoe UI', Arial, sans-serif;
 }
 
-:root{--dash-bg:url('/images/pexels-5lfilm-20552663.jpg'); --accent: #2c3e50; --accent-dark: #22313a}
+:root {
+    --dash-bg: url('/images/pexels-5lfilm-20552663.jpg');
+
+    /* Bakery palette */
+    --espresso: #2E1F14;
+    --espresso-light: #4A3323;
+    --cream: #FBF6EC;
+    --cream-soft: #F3E9D6;
+    --berry: #A6444F;
+    --berry-dark: #832C36;
+    --gold: #C9973F;
+    --gold-light: #E4BE72;
+    --sage: #6E8B63;
+
+    --accent: var(--berry);
+    --accent-dark: var(--berry-dark);
+
+    /* Glass surfaces */
+    --glass-bg: rgba(255, 250, 240, 0.55);
+    --glass-bg-strong: rgba(255, 250, 240, 0.72);
+    --glass-border: rgba(255, 255, 255, 0.45);
+    --glass-shadow: rgba(46, 31, 20, 0.25);
+}
+
 body {
-    background-image: linear-gradient(rgba(0,0,0,0.25), rgba(0,0,0,0.25)), var(--dash-bg);
+    background-image:
+        linear-gradient(160deg, rgba(46, 31, 20, 0.55), rgba(46, 31, 20, 0.35)),
+        var(--dash-bg);
     background-size: cover;
     background-position: center;
-    color: #333;
+    background-attachment: fixed;
+    color: var(--espresso);
 }
 
 /* =========================
@@ -29,9 +55,12 @@ body {
    HEADER
 ========================= */
 header {
-    background: rgba(44,62,80,0.9);
-    color: white;
-    padding: 15px 20px;
+    background: rgba(46, 31, 20, 0.55);
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+    border-bottom: 1px solid rgba(228, 190, 114, 0.35);
+    color: var(--cream);
+    padding: 18px 28px;
 }
 
 .header-content {
@@ -39,62 +68,84 @@ header {
     justify-content: space-between;
     align-items: center;
     flex-wrap: wrap;
+    gap: 12px;
 }
 
 header h1 {
     font-size: 22px;
+    font-weight: 600;
+    letter-spacing: 0.2px;
+    color: var(--cream);
 }
 
 .user-profile {
     font-size: 14px;
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 14px;
+    color: var(--cream-soft);
 }
 
 .logout-btn {
-    padding: 6px 12px;
-    border: none;
-    background: #fff;
-    color: var(--accent);
+    padding: 8px 16px;
+    border: 1px solid rgba(228, 190, 114, 0.6);
+    background: transparent;
+    color: var(--gold-light);
     cursor: pointer;
-    border-radius: 5px;
-    font-weight: bold;
+    border-radius: 999px;
+    font-weight: 600;
+    font-size: 13px;
+    transition: 0.2s ease;
 }
 
 .logout-btn:hover {
-    background: #f1f1f1;
+    background: var(--gold);
+    color: var(--espresso);
+    border-color: var(--gold);
 }
 
 /* =========================
    NAVIGATION
 ========================= */
 .tabs {
-    margin-top: 10px;
+    margin-top: 16px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    background: rgba(0, 0, 0, 0.18);
+    padding: 6px;
+    border-radius: 999px;
+    width: fit-content;
+    max-width: 100%;
 }
 
 .tab-btn {
     background: transparent;
-    border: 1px solid #fff;
-    color: white;
-    padding: 8px 12px;
-    margin-right: 8px;
+    border: none;
+    color: var(--cream-soft);
+    padding: 9px 18px;
     cursor: pointer;
-    border-radius: 5px;
-    transition: 0.2s;
+    border-radius: 999px;
+    font-size: 14px;
+    font-weight: 500;
+    transition: 0.25s ease;
 }
 
 .tab-btn.active,
 .tab-btn:hover {
-    background: white;
-    color: var(--accent);
+    background: var(--gold);
+    color: var(--espresso);
+    font-weight: 600;
 }
 
 /* =========================
    MAIN CONTENT
 ========================= */
 main {
-    padding: 20px;
+    padding: 28px;
+    max-width: 1200px;
+    width: 100%;
+    margin: 0 auto;
 }
 
 .content-section {
@@ -109,7 +160,19 @@ main {
    SECTION HEADERS
 ========================= */
 .section-header {
-    margin-bottom: 15px;
+    margin-bottom: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+.section-header h2 {
+    color: var(--cream);
+    font-weight: 600;
+    font-size: 22px;
+    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.35);
 }
 
 /* =========================
@@ -118,22 +181,27 @@ main {
 .grid-container {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-    gap: 15px;
+    gap: 20px;
 }
 
 /* =========================
-   CARDS (GLOBAL)
+   CARDS (GLOBAL) — GLASSMORPHISM
 ========================= */
 .card {
-    background: white;
-    padding: 15px;
-    border-radius: 10px;
-    box-shadow: 0 0 6px rgba(0,0,0,0.08);
-    transition: 0.2s ease;
+    background: var(--glass-bg);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid var(--glass-border);
+    padding: 16px;
+    border-radius: 18px;
+    box-shadow: 0 8px 28px var(--glass-shadow);
+    transition: 0.25s ease;
 }
 
 .card:hover {
-    transform: translateY(-3px);
+    transform: translateY(-4px);
+    box-shadow: 0 14px 34px rgba(46, 31, 20, 0.32);
+    border-color: rgba(255, 255, 255, 0.65);
 }
 
 /* =========================
@@ -141,10 +209,11 @@ main {
 ========================= */
 .product-card img {
     width: 100%;
-    height: 150px;
+    height: 160px;
     object-fit: cover;
-    border-radius: 8px;
-    margin-bottom: 10px;
+    border-radius: 12px;
+    margin-bottom: 12px;
+    box-shadow: 0 4px 14px rgba(46, 31, 20, 0.25);
 }
 
 .card-info {
@@ -153,41 +222,43 @@ main {
 
 .card-info h3 {
     margin-bottom: 5px;
+    color: var(--espresso);
 }
 
 .description {
     font-size: 13px;
-    color: #666;
+    color: var(--espresso-light);
+    opacity: 0.85;
     margin-bottom: 8px;
 }
 
 .price {
-    font-size: 18px;
-    font-weight: bold;
-    color: var(--accent);
+    font-size: 19px;
+    font-weight: 700;
+    color: var(--berry-dark);
     margin: 8px 0;
 }
 
 /* =========================
-   🔥 ORDER BUTTON (FIXED STYLE)
+   ORDER BUTTON
 ========================= */
 .order-btn {
-  
     width: 100%;
-    
     margin-bottom: 10px;
-    padding: 10px;
+    padding: 11px;
     border: none;
-    border-radius: 6px;
+    border-radius: 10px;
     cursor: pointer;
-    font-weight: bold;
-    background: #28a745;
-    color: white;
-    transition: 0.2s;
+    font-weight: 600;
+    letter-spacing: 0.2px;
+    background: linear-gradient(135deg, var(--berry), var(--berry-dark));
+    color: var(--cream);
+    transition: 0.2s ease;
 }
 
 .order-btn:hover {
-    background: #218838;
+    filter: brightness(1.08);
+    transform: translateY(-1px);
 }
 
 /* =========================
@@ -196,7 +267,7 @@ main {
 .order-card,
 .booking-card {
     padding: 18px;
-    border-left: 5px solid var(--accent);
+    border-left: 4px solid var(--gold);
 }
 
 .order-card p,
@@ -208,7 +279,7 @@ main {
    STATUS TAG
 ========================= */
 .status-tag {
-    background: #eee;
+    background: rgba(46, 31, 20, 0.08);
     padding: 4px 10px;
     border-radius: 20px;
     font-size: 12px;
@@ -221,12 +292,14 @@ main {
     position: fixed;
     top: 0;
     left: 0;
-    background: rgba(0,0,0,0.6);
+    background: rgba(20, 13, 8, 0.55);
+    backdrop-filter: blur(4px);
     width: 100%;
     height: 100%;
     display: flex;
     justify-content: center;
     align-items: center;
+    z-index: 100;
 }
 
 .modal.hidden {
@@ -234,16 +307,34 @@ main {
 }
 
 .modal-card {
-    background: white;
-    padding: 20px;
+    background: var(--glass-bg-strong);
+    backdrop-filter: blur(22px);
+    -webkit-backdrop-filter: blur(22px);
+    border: 1px solid var(--glass-border);
+    padding: 24px;
     width: 400px;
-    border-radius: 10px;
+    max-width: 92vw;
+    border-radius: 16px;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.35);
 }
 
 .modal-header {
     display: flex;
     justify-content: space-between;
+    align-items: center;
     margin-bottom: 15px;
+}
+
+.modal-header h3 {
+    color: var(--espresso);
+}
+
+.modal-header button {
+    background: none;
+    border: none;
+    font-size: 20px;
+    cursor: pointer;
+    color: var(--espresso-light);
 }
 
 /* =========================
@@ -253,11 +344,23 @@ main {
     margin-bottom: 12px;
 }
 
-input {
+input,
+select {
     width: 100%;
-    padding: 10px;
-    border-radius: 6px;
-    border: 1px solid #ccc;
+    padding: 10px 12px;
+    border-radius: 8px;
+    border: 1.5px solid rgba(46, 31, 20, 0.18);
+    background: rgba(255, 255, 255, 0.7);
+    color: var(--espresso);
+    outline: none;
+    transition: 0.2s ease;
+}
+
+input:focus,
+select:focus {
+    border-color: var(--berry);
+    background: #fff;
+    box-shadow: 0 0 0 3px rgba(166, 68, 79, 0.15);
 }
 
 /* =========================
@@ -270,27 +373,29 @@ input {
 }
 
 .btn-confirm {
-    background: #28a745;
-    color: white;
+    background: linear-gradient(135deg, var(--gold), #B98330);
+    color: var(--espresso);
     border: none;
     padding: 10px;
     flex: 1;
-    border-radius: 6px;
+    border-radius: 8px;
     cursor: pointer;
+    font-weight: 600;
 }
 
 .btn-cancel {
-    background: #dc3545;
-    color: white;
-    border: none;
+    background: rgba(46, 31, 20, 0.08);
+    color: var(--espresso);
+    border: 1px solid rgba(46, 31, 20, 0.15);
     padding: 10px;
     flex: 1;
-    border-radius: 6px;
+    border-radius: 8px;
     cursor: pointer;
+    font-weight: 600;
 }
 
-.btn-confirm:hover { opacity: 0.9; }
-.btn-cancel:hover { opacity: 0.9; }
+.btn-confirm:hover { filter: brightness(1.05); transform: translateY(-1px); }
+.btn-cancel:hover { background: rgba(46, 31, 20, 0.14); }
 
 /* =========================
    PAYMENT MODAL
@@ -302,7 +407,7 @@ input {
 .payment-status {
     margin-top: 10px;
     font-size: 13px;
-    color: #333;
+    color: var(--espresso-light);
 }
 
 /* =========================
@@ -310,11 +415,11 @@ input {
 ========================= */
 .status-msg {
     padding: 10px;
-    color: #666;
+    color: var(--cream-soft);
 }
 
 .status-msg.error {
-    color: red;
+    color: #E67E7E;
 }
 
 .service-option {
@@ -323,24 +428,27 @@ input {
     gap: 10px;
     margin-bottom: 8px;
     padding: 8px;
-    background: #f9f9f9;
-    border-radius: 4px;
+    background: rgba(46, 31, 20, 0.05);
+    border-radius: 8px;
 }
 
 .badge {
-    padding: 4px 8px;
+    padding: 4px 10px;
     border-radius: 12px;
-    font-size: 0.8em;
+    font-size: 0.75em;
+    font-weight: 600;
     text-transform: uppercase;
+    letter-spacing: 0.3px;
 }
-.badge.pending { background: #ffeaa7; color: #d35400; }
-.badge.approved { background: #55efc4; color: #00b894; }
-.badge.rejected { background: #ff7675; color: #d63031; }
+.badge.pending { background: #F6E3B4; color: #8A5A00; }
+.badge.approved { background: #CFE3C6; color: #3E6B2F; }
+.badge.rejected { background: #F0C6C6; color: #8B2E2E; }
+
 .spinner {
     width: 40px;
     height: 40px;
-    border: 4px solid #f3f3f3;
-    border-top: 4px solid var(--accent); /* accent */
+    border: 4px solid rgba(46, 31, 20, 0.12);
+    border-top: 4px solid var(--berry);
     border-radius: 50%;
     animation: spin 1s linear infinite;
     margin: 10px auto;
@@ -352,10 +460,10 @@ input {
 }
 
 .hidden { display: none !important; }
+
 .booking-card {
-    border-left: 5px solid var(--accent); /* Adds a nice accent */
+    border-left: 4px solid var(--gold);
     padding: 20px;
-    background: #fff;
     display: flex;
     flex-direction: column;
     gap: 10px;
@@ -363,18 +471,18 @@ input {
 
 .booking-card h3 {
     margin: 0;
-    color: #2d3436;
+    color: var(--espresso);
     font-size: 1.1rem;
 }
 
 .booking-card p {
     margin: 5px 0;
     font-size: 0.95rem;
-    color: #636e72;
+    color: var(--espresso-light);
 }
 
 .booking-card strong {
-    color: #2d3436;
+    color: var(--espresso);
 }
 
 .card-header {
@@ -383,29 +491,30 @@ input {
     align-items: center;
     margin-bottom: 10px;
 }
-#btn {
-  display: block; /* Ensures the button behaves as a block to respect margins */
-  margin-left: auto;
-  margin-top: 10px;
-}
 
+#btn {
+    display: block;
+    margin-left: auto;
+    margin-top: 10px;
+    padding: 10px 20px;
+    border-radius: 999px;
+}
 
 /* ==========================================
    PROFILE SECTION STYLING
    ========================================== */
-
-/* Center the form and give it a max-width */
 #profile .form-container {
-    max-width: 95%;
+    max-width: 560px;
     margin: 20px auto;
-    background: #ffffff;
+    background: var(--glass-bg-strong);
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
     padding: 40px;
-    border-radius: 12px;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
-    border: 1px solid #eee;
+    border-radius: 18px;
+    box-shadow: 0 10px 34px var(--glass-shadow);
+    border: 1px solid var(--glass-border);
 }
 
-/* Grouping labels and inputs */
 .form-group {
     margin-bottom: 20px;
     display: flex;
@@ -415,59 +524,54 @@ input {
 .form-group label {
     font-weight: 600;
     margin-bottom: 8px;
-    color: #444;
-    font-size: 0.9rem;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
+    color: var(--espresso-light);
+    font-size: 0.85rem;
+    letter-spacing: 0.4px;
 }
 
-/* Modern Input Styling */
 .form-group input {
     padding: 12px 15px;
-    border: 1.5px solid #ddd;
-    border-radius: 8px;
+    border: 1.5px solid rgba(46, 31, 20, 0.15);
+    border-radius: 10px;
     font-size: 1rem;
-    transition: all 0.3s ease;
+    transition: all 0.25s ease;
     outline: none;
-    background-color: #f9f9f9;
+    background-color: rgba(255, 255, 255, 0.65);
 }
 
 .form-group input:focus {
-    border-color: var(--accent); /* accent */
+    border-color: var(--berry);
     background-color: #fff;
-    box-shadow: 0 0 0 3px rgba(44, 62, 80, 0.08);
+    box-shadow: 0 0 0 3px rgba(166, 68, 79, 0.15);
 }
 
-/* Profile Update Button */
 #profile .btn-confirm {
     width: 100%;
     padding: 14px;
-    font-size: 1.1rem;
-    font-weight: bold;
-    background-color: #27ae60;
-    color: white;
+    font-size: 1.05rem;
+    font-weight: 700;
+    background: linear-gradient(135deg, var(--gold), #B98330);
+    color: var(--espresso);
     border: none;
-    border-radius: 8px;
+    border-radius: 10px;
     cursor: pointer;
-    transition: background 0.3s ease;
+    transition: 0.25s ease;
     margin-top: 10px;
 }
 
 #profile .btn-confirm:hover {
-    background-color: #219150;
+    filter: brightness(1.06);
     transform: translateY(-1px);
 }
 
-/* Status Messages */
 #profileMsg {
     margin-top: 15px;
     text-align: center;
     font-weight: 500;
     min-height: 20px;
+    color: var(--espresso);
 }
 
-/* Responsive Grid for Profile (optional) 
-   If you want City/State/Zip on one line on desktop */
 @media (min-width: 600px) {
     .address-grid {
         display: grid;
@@ -475,5 +579,3 @@ input {
         gap: 15px;
     }
 }
-
-
